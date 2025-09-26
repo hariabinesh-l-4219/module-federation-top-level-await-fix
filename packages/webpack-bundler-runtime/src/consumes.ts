@@ -16,11 +16,15 @@ export function consumes(options: ConsumesOptions) {
       if (webpackRequire.o(installedModules, id)) {
         return promises.push(installedModules[id] as Promise<any>);
       }
-      const onFactory = (factory: () => any) => {
+      const onFactory = async (factory: () => any) => {
         installedModules[id] = 0;
+        const result = factory();
+        if (result.then) {
+            result = await result.then();
+        }
         webpackRequire.m[id] = (module) => {
           delete webpackRequire.c[id];
-          const result = factory();
+          
           // Add layer property from shareConfig if available
           const { shareInfo } = moduleToHandlerMapping[id];
           if (
