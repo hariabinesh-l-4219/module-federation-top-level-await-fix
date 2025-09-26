@@ -18,9 +18,9 @@ export function consumes(options: ConsumesOptions) {
       }
       const onFactory = async (factory: () => any) => {
         installedModules[id] = 0;
-        const result = factory();
+        let result = factory();
         if (result.then) {
-            result = await result.then();
+            result = await result;
         }
         webpackRequire.m[id] = (module) => {
           delete webpackRequire.c[id];
